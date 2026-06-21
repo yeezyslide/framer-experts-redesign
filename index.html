@@ -555,7 +555,7 @@
     'https://mixpanel.com','https://intercom.com','https://airtable.com','https://coda.io',
     'https://miro.com','https://canva.com','https://height.app','https://attio.com'
   ];
-  const shotURL = i => `https://s.wordpress.com/mshots/v1/${encodeURIComponent(siteUrls[((i%siteUrls.length)+siteUrls.length)%siteUrls.length])}?w=1200&h=900`;
+  const shotURL = i => `https://image.thum.io/get/width/1200/crop/750/${siteUrls[((i%siteUrls.length)+siteUrls.length)%siteUrls.length]}`;
   const avatarURL = i => `https://i.pravatar.cc/160?img=${(i % 70) + 1}`;
   const faceBG = i => `background-image:url('${avatarURL(i)}'), ${pf(i)};background-size:cover;background-position:center;`;
 
