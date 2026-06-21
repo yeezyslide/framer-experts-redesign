@@ -460,23 +460,17 @@
         </div>
 
         <div class="pop-wrap">
-          <button class="btn" onclick="toggle('filterPop')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
-            Filter <span class="badge-count">1</span>
+          <button class="btn" id="budgetBtn" onclick="toggle('budgetPop')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            Budget: <b style="font-weight:600" id="budgetLabel">Any</b>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
           </button>
-          <div class="pop" id="filterPop">
-            <h4>Budget</h4>
-            <div class="opt"><span class="dot"></span>Under $1K</div>
-            <div class="opt sel"><span class="dot"></span>$1K – $5K</div>
-            <div class="opt"><span class="dot"></span>$5K+</div>
-            <div class="divline"></div>
-            <h4>Specialty</h4>
-            <div class="opt"><span class="dot"></span>Framer</div>
-            <div class="opt"><span class="dot"></span>Webflow</div>
-            <div class="opt"><span class="dot"></span>Branding</div>
-            <div class="divline"></div>
-            <h4>Availability</h4>
-            <div class="opt"><span class="dot"></span>Available now</div>
+          <div class="pop" id="budgetPop">
+            <h4>Filter by budget</h4>
+            <div class="opt sel" onclick="setBudget(this,'Any')"><span class="dot"></span>Any budget</div>
+            <div class="opt" onclick="setBudget(this,'Under $1K')"><span class="dot"></span>Under $1K</div>
+            <div class="opt" onclick="setBudget(this,'$1K – $5K')"><span class="dot"></span>$1K – $5K</div>
+            <div class="opt" onclick="setBudget(this,'$5K+')"><span class="dot"></span>$5K+</div>
           </div>
         </div>
 
@@ -501,7 +495,6 @@
 
       <div class="chips">
         <span class="chip"><b>United States</b><span class="x">✕</span></span>
-        <span class="chip">Budget: <b>$1K–$5K</b><span class="x">✕</span></span>
         <span class="clear">Clear all</span>
       </div>
 
@@ -664,11 +657,17 @@
   experts.forEach((e,i)=>{ e.oi = i; });
   let currentTier = 'All';
   let currentSort = 'Featured';
+  let currentBudget = 'Any';
+  const priceVal = e => parseFloat(e.price.replace(/[$K]/g,''));
 
   function renderPeople(){
     let list = experts.slice();
     if(currentTier === 'Pro Expert') list = list.filter(e=>e.pro);
     else if(currentTier === 'Expert') list = list.filter(e=>!e.pro);
+
+    if(currentBudget === 'Under $1K') list = list.filter(e=>priceVal(e) < 1);
+    else if(currentBudget === '$1K – $5K') list = list.filter(e=>priceVal(e) >= 1 && priceVal(e) < 5);
+    else if(currentBudget === '$5K+') list = list.filter(e=>priceVal(e) >= 5);
 
     if(currentSort === 'Tier: Pro Experts first') list.sort((a,b)=>(b.pro?1:0)-(a.pro?1:0));
     else if(currentSort === 'Available now') list.sort((a,b)=>(b.avail?1:0)-(a.avail?1:0));
@@ -722,6 +721,14 @@
     document.getElementById('tierLabel').textContent = val === 'All' ? 'All' : val;
     document.getElementById('tierBtn').classList.toggle('active-filter', val !== 'All');
     currentTier = val;
+    renderPeople();
+  }
+  function setBudget(el,val){
+    el.parentElement.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+    el.classList.add('sel');
+    document.getElementById('budgetLabel').textContent = val === 'Any' ? 'Any' : val;
+    document.getElementById('budgetBtn').classList.toggle('active-filter', val !== 'Any');
+    currentBudget = val;
     renderPeople();
   }
   // ================= AI Match questionnaire =================
