@@ -559,9 +559,17 @@
   const avatarURL = i => `https://i.pravatar.cc/160?img=${(i % 70) + 1}`;
   const faceBG = i => `background-image:url('${avatarURL(i)}'), ${pf(i)};background-size:cover;background-position:center;`;
 
-  // shot inset on an offwhite backdrop with a subtle drop shadow — looks like an uploaded shot
+  // subtle, light gradient backdrops (soft tints, never loud)
+  const shotBgs = [
+    'linear-gradient(140deg,#f5f3ef,#e8e6df)','linear-gradient(140deg,#eef3f8,#dfe7f1)',
+    'linear-gradient(140deg,#f5eff2,#e9dfe7)','linear-gradient(140deg,#edf4f0,#dde9e2)',
+    'linear-gradient(140deg,#f2f1f7,#e3e2ef)','linear-gradient(140deg,#f7f2ec,#efe4d8)',
+    'linear-gradient(140deg,#eef4f5,#dde9eb)','linear-gradient(140deg,#f4f1ee,#e7e3dc)'
+  ];
+  const shotBg = i => shotBgs[((i%shotBgs.length)+shotBgs.length)%shotBgs.length];
+  // shot inset on a soft tinted backdrop with a subtle drop shadow — looks like an uploaded shot
   const shotFrame = i => `
-    <div class="shot-wrap">
+    <div class="shot-wrap" style="background:${shotBg(i)}">
       <div class="shot-img" style="background-image:url('${shotURL(i)}')"></div>
     </div>`;
 
@@ -624,7 +632,7 @@
   function featuredCard(e, i) {
     return `
     <div class="ft-card">
-      <div class="ft-bg" style="background:var(--shot-bg)"></div>
+      <div class="ft-bg" style="background:${shotBg(e.featIdx)}"></div>
       ${shotFrame(e.featIdx)}
       <div class="ft-shade"></div>
       <div class="ft-pill">${starSVG} Featured Expert</div>
