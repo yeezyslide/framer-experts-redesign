@@ -539,6 +539,21 @@
   const g = i => grads[((i%grads.length)+grads.length)%grads.length];
   const pf = i => `linear-gradient(135deg,${pfpGrads[i % pfpGrads.length]})`;
 
+  // ---- real placeholder imagery (no API keys) ----
+  // Live-site screenshots via WordPress mShots; gradient shows underneath while generating.
+  const siteUrls = [
+    'https://linear.app','https://stripe.com','https://vercel.com','https://framer.com',
+    'https://notion.so','https://raycast.com','https://arc.net','https://pitch.com',
+    'https://superhuman.com','https://mintlify.com','https://resend.com','https://clerk.com',
+    'https://supabase.com','https://cal.com','https://dub.co','https://railway.app',
+    'https://gumroad.com','https://posthog.com','https://retool.com','https://loom.com'
+  ];
+  const shotURL = i => `https://s.wordpress.com/mshots/v1/${encodeURIComponent(siteUrls[((i%siteUrls.length)+siteUrls.length)%siteUrls.length])}?w=1200&h=750`;
+  const avatarURL = i => `https://i.pravatar.cc/160?img=${(i % 70) + 1}`;
+  // layered: real image on top, gradient fallback underneath
+  const imgBG  = i => `background-image:url('${shotURL(i)}'), ${g(i)};background-size:cover;background-position:top center;`;
+  const faceBG = i => `background-image:url('${avatarURL(i)}'), ${pf(i)};background-size:cover;background-position:center;`;
+
   const experts = [
     {name:'Shawnee Wright', pro:true,  loc:'Phoenix, USA',     price:'$1K',   avail:true,  shots:4},
     {name:'Arini Studio',   pro:true,  loc:'Austin, USA',      price:'$3K',   avail:true,  shots:5},
@@ -556,7 +571,7 @@
 
   function expertCard(e) {
     const i = e.oi;
-    const slides = Array.from({length:e.shots}, (_,s)=>`<div class="slide" style="background:${g(i*5+s)}"></div>`).join('');
+    const slides = Array.from({length:e.shots}, (_,s)=>`<div class="slide" style="${imgBG(i*5+s)}"></div>`).join('');
     const dots = Array.from({length:e.shots}, (_,s)=>`<span class="${s===0?'on':''}"></span>`).join('');
     return `
     <div class="card" data-idx="${i}" data-count="${e.shots}">
@@ -569,7 +584,7 @@
       </div>
       <div class="card-body">
         <div class="who">
-          <div class="pfp" style="background:${pf(i)}"></div>
+          <div class="pfp" style="${faceBG(i)}"></div>
           <div class="meta">
             <div class="nm">${e.name} ${e.pro?verifiedSVG:''}</div>
             <div class="sub">
@@ -592,10 +607,10 @@
   function projectCard(e, i, slot) {
     return `
     <div class="proj">
-      <div class="img" style="background:${g(i*5+slot)}"></div>
+      <div class="img" style="${imgBG(i*5+slot)}"></div>
       <div class="overlay">
         <div class="author">
-          <div class="pfp" style="background:${pf(i)}"></div>
+          <div class="pfp" style="${faceBG(i)}"></div>
           <div>
             <div class="nm">${e.name}</div>
             <div class="loc2">${e.loc}</div>
@@ -615,11 +630,11 @@
   function featuredCard(e, i) {
     return `
     <div class="ft-card">
-      <div class="ft-bg" style="background:${g(i*5)}"></div>
+      <div class="ft-bg" style="${imgBG(i*5)}"></div>
       <div class="ft-shade"></div>
       <div class="ft-pill">${starSVG} Featured Expert</div>
       <div class="ft-body">
-        <div class="ft-pfp" style="background:${pf(i)}"></div>
+        <div class="ft-pfp" style="${faceBG(i)}"></div>
         <div class="ft-meta">
           <div class="ft-nm">${e.name} ${e.pro?verifiedSVG:''}</div>
           <div class="ft-sub">
@@ -778,7 +793,7 @@
 
     const rows = scored.map(({e,s})=>`
       <div class="match-row">
-        <div class="pfp" style="background:${pf(e.oi)}"></div>
+        <div class="pfp" style="${faceBG(e.oi)}"></div>
         <div class="info">
           <div class="rn">${e.name} ${e.pro?verifiedSVG:''}</div>
           <div class="rs">${e.pro?'Pro Expert':'Expert'} · ${e.loc} · from ${e.price}</div>
