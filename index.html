@@ -19,6 +19,7 @@
     --text-2: #9b9ba3;
     --text-3: #6a6a72;
     --white-btn: #ffffff;
+    --shot-bg: #f1f0ec;
     --green: #3ddc84;
     --radius: 16px;
     --radius-sm: 9px;
@@ -185,19 +186,13 @@
   .track { display: flex; height: 100%; transition: transform .35s cubic-bezier(.4,0,.2,1); }
   .slide { min-width: 100%; height: 100%; }
 
-  /* ----- Dribbble-style framed shot (padding + gradient backdrop) ----- */
+  /* ----- shot inset on offwhite backdrop with subtle shadow ----- */
   .shot-wrap { width: 100%; height: 100%; display: flex; align-items: center;
-    justify-content: center; padding: 9% 9% 0; }
-  .shot-card { width: 100%; border-radius: 11px 11px 0 0; overflow: hidden;
-    background: #fff; border: 1px solid rgba(0,0,0,.12); border-bottom: 0;
-    box-shadow: 0 26px 50px -16px rgba(0,0,0,.45), 0 6px 14px -8px rgba(0,0,0,.4); }
-  .shot-bar { height: 24px; background: #f1f1f3; display: flex; align-items: center;
-    gap: 5px; padding: 0 11px; border-bottom: 1px solid #e3e3e6; }
-  .shot-bar .d { width: 8px; height: 8px; border-radius: 50%; }
-  .shot-bar .url { margin-left: 8px; height: 11px; flex: 1; max-width: 60%;
-    background: #e3e3e6; border-radius: 6px; }
-  .shot-img { aspect-ratio: 16/9.5; background-size: cover; background-position: top center;
-    background-color: #fff; }
+    justify-content: center; padding: 9%; background: var(--shot-bg); }
+  .shot-img { width: 100%; aspect-ratio: 16/10; border-radius: 9px; overflow: hidden;
+    background-size: cover; background-position: top center; background-color: #fff;
+    border: 1px solid rgba(0,0,0,.06);
+    box-shadow: 0 12px 26px -10px rgba(0,0,0,.28), 0 3px 8px -4px rgba(0,0,0,.18); }
   .arrow { position: absolute; top: 50%; transform: translateY(-50%);
     width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,.18);
     background: rgba(10,10,11,.6); backdrop-filter: blur(6px); color: #fff;
@@ -553,8 +548,8 @@
     'https://superhuman.com','https://mintlify.com','https://resend.com','https://clerk.com',
     'https://supabase.com','https://cal.com','https://dub.co','https://railway.app',
     'https://gumroad.com','https://posthog.com','https://retool.com','https://loom.com',
-    'https://figma.com','https://webflow.com','https://openai.com','https://anthropic.com',
-    'https://perplexity.ai','https://replit.com','https://planetscale.com','https://render.com',
+    'https://figma.com','https://webflow.com','https://tailwindcss.com','https://basecamp.com',
+    'https://hey.com','https://replit.com','https://planetscale.com','https://render.com',
     'https://fly.io','https://netlify.com','https://sanity.io','https://contentful.com',
     'https://algolia.com','https://twilio.com','https://segment.com','https://amplitude.com',
     'https://mixpanel.com','https://intercom.com','https://airtable.com','https://coda.io',
@@ -564,25 +559,10 @@
   const avatarURL = i => `https://i.pravatar.cc/160?img=${(i % 70) + 1}`;
   const faceBG = i => `background-image:url('${avatarURL(i)}'), ${pf(i)};background-size:cover;background-position:center;`;
 
-  // soft, designed gradient backdrops for the framed shots (Dribbble feel)
-  const shotBgs = [
-    'linear-gradient(135deg,#667eea,#764ba2)','linear-gradient(135deg,#f093fb,#f5576c)',
-    'linear-gradient(135deg,#4facfe,#00f2fe)','linear-gradient(135deg,#43e97b,#38f9d7)',
-    'linear-gradient(135deg,#fa709a,#fee140)','linear-gradient(135deg,#30cfd0,#330867)',
-    'linear-gradient(135deg,#a18cd1,#fbc2eb)','linear-gradient(135deg,#08aeea,#2af598)',
-    'linear-gradient(135deg,#f6d365,#fda085)','linear-gradient(135deg,#5ee7df,#b490ca)',
-    'linear-gradient(135deg,#21d4fd,#b721ff)','linear-gradient(135deg,#ff9a8b,#ff6a88)',
-    'linear-gradient(135deg,#0ba360,#3cba92)','linear-gradient(135deg,#e96443,#904e95)'
-  ];
-  const shotBg = i => shotBgs[((i%shotBgs.length)+shotBgs.length)%shotBgs.length];
-  const winDots = '<span class="d" style="background:#ff5f57"></span><span class="d" style="background:#febc2e"></span><span class="d" style="background:#28c840"></span>';
-  // a framed browser mockup on a gradient backdrop — looks like an uploaded shot, not a raw screenshot
+  // shot inset on an offwhite backdrop with a subtle drop shadow — looks like an uploaded shot
   const shotFrame = i => `
-    <div class="shot-wrap" style="background:${shotBg(i)}">
-      <div class="shot-card">
-        <div class="shot-bar">${winDots}<span class="url"></span></div>
-        <div class="shot-img" style="background-image:url('${shotURL(i)}')"></div>
-      </div>
+    <div class="shot-wrap">
+      <div class="shot-img" style="background-image:url('${shotURL(i)}')"></div>
     </div>`;
 
   const experts = [
@@ -644,7 +624,7 @@
   function featuredCard(e, i) {
     return `
     <div class="ft-card">
-      <div class="ft-bg" style="background:${shotBg(e.featIdx)}"></div>
+      <div class="ft-bg" style="background:var(--shot-bg)"></div>
       ${shotFrame(e.featIdx)}
       <div class="ft-shade"></div>
       <div class="ft-pill">${starSVG} Featured Expert</div>
