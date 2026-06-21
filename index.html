@@ -535,7 +535,13 @@
     'https://notion.so','https://raycast.com','https://arc.net','https://pitch.com',
     'https://superhuman.com','https://mintlify.com','https://resend.com','https://clerk.com',
     'https://supabase.com','https://cal.com','https://dub.co','https://railway.app',
-    'https://gumroad.com','https://posthog.com','https://retool.com','https://loom.com'
+    'https://gumroad.com','https://posthog.com','https://retool.com','https://loom.com',
+    'https://figma.com','https://webflow.com','https://openai.com','https://anthropic.com',
+    'https://perplexity.ai','https://replit.com','https://planetscale.com','https://render.com',
+    'https://fly.io','https://netlify.com','https://sanity.io','https://contentful.com',
+    'https://algolia.com','https://twilio.com','https://segment.com','https://amplitude.com',
+    'https://mixpanel.com','https://intercom.com','https://airtable.com','https://coda.io',
+    'https://miro.com','https://canva.com','https://height.app','https://attio.com'
   ];
   const shotURL = i => `https://s.wordpress.com/mshots/v1/${encodeURIComponent(siteUrls[((i%siteUrls.length)+siteUrls.length)%siteUrls.length])}?w=1200&h=750`;
   const avatarURL = i => `https://i.pravatar.cc/160?img=${(i % 70) + 1}`;
@@ -555,12 +561,16 @@
     {name:'Framer Geeks',   pro:true,  loc:'Boston, USA',      price:'$2.5K', avail:true,  shots:4}
   ];
 
+  // Assign every thumbnail a unique, stable site index so no website image repeats.
+  let _imgPtr = 0;
+  experts.forEach(e => { e.shotIdx = Array.from({length:e.shots}, () => _imgPtr++); });
+
   const verifiedSVG = `<svg class="verified" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 1.8 3 .2.6 2.9L20 9.3l-1 2.7 1 2.7-2 2.4-.6 2.9-3 .2L12 22l-2.4-1.8-3-.2-.6-2.9L4 14.7l1-2.7-1-2.7 2-2.4.6-2.9 3-.2z"/><path d="M9 12l2 2 4-4" stroke="#161617" stroke-width="2" fill="none"/></svg>`;
   const pinSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
 
   function expertCard(e) {
     const i = e.oi;
-    const slides = Array.from({length:e.shots}, (_,s)=>`<div class="slide" style="${imgBG(i*5+s)}"></div>`).join('');
+    const slides = Array.from({length:e.shots}, (_,s)=>`<div class="slide" style="${imgBG(e.shotIdx[s])}"></div>`).join('');
     const dots = Array.from({length:e.shots}, (_,s)=>`<span class="${s===0?'on':''}"></span>`).join('');
     return `
     <div class="card" data-idx="${i}" data-count="${e.shots}">
@@ -598,7 +608,7 @@
   function featuredCard(e, i) {
     return `
     <div class="ft-card">
-      <div class="ft-bg" style="${imgBG(i*5)}"></div>
+      <div class="ft-bg" style="${imgBG(e.featIdx)}"></div>
       <div class="ft-shade"></div>
       <div class="ft-pill">${starSVG} Featured Expert</div>
       <div class="ft-body">
@@ -617,6 +627,7 @@
     </div>`;
   }
   const featuredPicks = [experts[1], experts[5], experts[7], experts[0]];
+  featuredPicks.forEach(e => { e.featIdx = _imgPtr++; });   // unique image, never reused
   document.getElementById('featuredRow').innerHTML =
     featuredPicks.map((e)=>featuredCard(e, experts.indexOf(e))).join('');
 
