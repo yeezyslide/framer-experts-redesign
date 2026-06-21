@@ -485,16 +485,6 @@
           </div>
         </div>
 
-        <div class="seg">
-          <button class="on" id="segPeople" onclick="setView('people')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="3"/><path d="M3 20v-1a5 5 0 015-5h2a5 5 0 015 5v1"/><circle cx="18" cy="8" r="2.2"/></svg>
-            People
-          </button>
-          <button id="segProjects" onclick="setView('projects')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
-            Projects
-          </button>
-        </div>
       </div>
 
       <div class="chips">
@@ -506,7 +496,6 @@
       <div class="result-count"><b>248</b> experts in the United States · sorted by Featured</div>
 
       <div id="peopleView" class="grid"></div>
-      <div id="projectsView" class="proj-grid" style="display:none"></div>
     </div>
   </main>
 </div>
@@ -604,27 +593,6 @@
     </div>`;
   }
 
-  function projectCard(e, i, slot) {
-    return `
-    <div class="proj">
-      <div class="img" style="${imgBG(i*5+slot)}"></div>
-      <div class="overlay">
-        <div class="author">
-          <div class="pfp" style="${faceBG(i)}"></div>
-          <div>
-            <div class="nm">${e.name}</div>
-            <div class="loc2">${e.loc}</div>
-          </div>
-          <button class="hire-mini">Hire</button>
-        </div>
-      </div>
-      <div class="label">
-        <div class="pn">${['Landing Page','Rebrand','Portfolio','SaaS Site','Template'][slot%5]}</div>
-        <div class="pc">by ${e.name} · ${e.loc}</div>
-      </div>
-    </div>`;
-  }
-
   // ---- Featured row (top 3 picks) ----
   const starSVG = `<svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>`;
   function featuredCard(e, i) {
@@ -677,10 +645,6 @@
       `<b>${list.length===experts.length?'248':list.length}</b> ${noun} in the United States · sorted by ${currentSort}`;
   }
   renderPeople();
-
-  let projHTML = '';
-  experts.forEach((e,i)=>{ for(let s=0;s<3;s++) projHTML += projectCard(e,i,s); });
-  document.getElementById('projectsView').innerHTML = projHTML;
 
   // ---- carousel ----
   const pos = {};
@@ -817,13 +781,6 @@
       </div>`;
   }
 
-  function setView(v){
-    const ppl = v==='people';
-    document.getElementById('peopleView').style.display = ppl?'grid':'none';
-    document.getElementById('projectsView').style.display = ppl?'none':'grid';
-    document.getElementById('segPeople').classList.toggle('on', ppl);
-    document.getElementById('segProjects').classList.toggle('on', !ppl);
-  }
 </script>
 </body>
 </html>
