@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Experts — Redesigned</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0b0c;
+    --panel: #0f0f10;
+    --card: #161617;
+    --card-hover: #1c1c1e;
+    --border: #232325;
+    --border-hi: #34343a;
+    --text: #ededee;
+    --text-2: #9b9ba3;
+    --text-3: #6a6a72;
+    --white-btn: #ffffff;
+    --green: #3ddc84;
+    --radius: 16px;
+    --radius-sm: 9px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased; letter-spacing: -0.011em; }
+  a { color: inherit; text-decoration: none; }
+  ::selection { background: #2b2b2f; }
+
+  .layout { display: flex; min-height: 100vh; }
+
+  /* ---------- Sidebar (matches Framer community) ---------- */
+  .sidebar { width: 244px; flex-shrink: 0; border-right: 1px solid var(--border);
+    padding: 14px 12px; position: sticky; top: 0; height: 100vh;
+    display: flex; flex-direction: column; gap: 4px; }
+  .profile { display: flex; align-items: center; gap: 10px; padding: 7px 8px;
+    border: 1px solid var(--border); border-radius: 10px; cursor: pointer; }
+  .profile:hover { background: var(--card); }
+  .profile .avatar { width: 28px; height: 28px; border-radius: 7px;
+    background: url('https://i.pravatar.cc/64?img=12') center/cover, linear-gradient(135deg,#5b6cff,#a855f7); }
+  .profile .name { font-size: 14px; font-weight: 600; flex: 1; }
+  .profile .chev { width: 15px; height: 15px; color: var(--text-3); }
+
+  .search { position: relative; margin: 8px 0 6px; }
+  .search svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+    width: 15px; height: 15px; color: var(--text-3); }
+  .search input { width: 100%; background: var(--card); border: 1px solid var(--border);
+    color: var(--text); padding: 9px 10px 9px 33px; border-radius: 9px; font-size: 13.5px;
+    outline: none; font-family: inherit; }
+  .search input::placeholder { color: var(--text-3); }
+  .search input:focus { border-color: var(--border-hi); }
+
+  .nav-label { font-size: 11px; text-transform: uppercase; letter-spacing: .05em;
+    color: var(--text-3); padding: 0 9px; margin: 16px 0 6px; font-weight: 600; }
+  .nav-item { display: flex; align-items: center; gap: 11px; padding: 8px 9px;
+    border-radius: var(--radius-sm); font-size: 14px; color: var(--text-2);
+    cursor: pointer; font-weight: 450; }
+  .nav-item:hover { background: var(--card); color: var(--text); }
+  .nav-item.active { background: var(--card); color: var(--text); font-weight: 500; }
+  .nav-item svg { width: 17px; height: 17px; opacity: .9; }
+  .sidebar .foot { margin-top: auto; }
+
+  /* ---------- Main ---------- */
+  .main { flex: 1; min-width: 0; }
+  .topbar { display: flex; align-items: center; gap: 8px; padding: 13px 28px;
+    border-bottom: 1px solid var(--border); position: sticky; top: 0;
+    background: rgba(11,11,12,.82); backdrop-filter: blur(12px); z-index: 20; }
+  .tabs { display: flex; gap: 2px; }
+  .tab { padding: 7px 13px; border-radius: 8px; font-size: 14px; color: var(--text-3);
+    cursor: pointer; font-weight: 500; }
+  .tab:hover { color: var(--text-2); }
+  .tab.active { background: var(--card); color: var(--text); }
+
+  .content { padding: 28px; max-width: 1320px; margin: 0 auto; }
+  .head { margin-bottom: 22px; display: flex; align-items: center;
+    justify-content: space-between; gap: 16px; }
+  .head h1 { font-size: 26px; font-weight: 680; letter-spacing: -.025em; }
+  .head p { color: var(--text-2); font-size: 14px; margin-top: 6px; }
+
+  /* ---------- Featured row ---------- */
+  .featured-head { display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px; }
+  .ft-title { font-size: 16px; font-weight: 650; letter-spacing: -.02em; }
+  .ft-nav { display: flex; gap: 8px; }
+  .ft-arrow { width: 32px; height: 32px; border-radius: 9px; border: 1px solid var(--border);
+    background: var(--card); color: var(--text-2); display: grid; place-items: center;
+    cursor: pointer; }
+  .ft-arrow:hover { background: var(--card-hover); border-color: var(--border-hi); color: var(--text); }
+  .ft-arrow svg { width: 16px; height: 16px; }
+  .featured-row { display: flex; gap: 20px; overflow-x: auto; scroll-behavior: smooth;
+    padding-bottom: 6px; margin-bottom: 34px; scrollbar-width: none; }
+  .featured-row::-webkit-scrollbar { display: none; }
+
+  .ft-card { flex: 0 0 480px; max-width: 480px; position: relative; border-radius: var(--radius);
+    overflow: hidden; border: 1px solid var(--border); cursor: pointer; aspect-ratio: 16/9;
+    transition: border-color .14s, box-shadow .14s; }
+  .ft-card:hover { border-color: var(--border-hi); box-shadow: 0 16px 44px -20px rgba(0,0,0,.85); }
+  .ft-bg { position: absolute; inset: 0; background-size: cover; background-position: center; }
+  .ft-shade { position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.9) 8%, rgba(0,0,0,.15) 55%, rgba(0,0,0,.25) 100%); }
+  .ft-pill { position: absolute; top: 14px; left: 14px; z-index: 2; display: inline-flex;
+    align-items: center; gap: 6px; font-size: 11.5px; font-weight: 600; color: #fff;
+    background: rgba(10,10,11,.6); backdrop-filter: blur(6px); padding: 5px 10px; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,.14); }
+  .ft-pill .star { width: 12px; height: 12px; color: #ffd479; }
+  .ft-body { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 16px 18px;
+    display: flex; align-items: center; gap: 12px; }
+  .ft-pfp { width: 46px; height: 46px; border-radius: 11px; background-size: cover;
+    border: 1px solid rgba(255,255,255,.18); flex-shrink: 0; }
+  .ft-meta { min-width: 0; flex: 1; }
+  .ft-nm { font-size: 16px; font-weight: 650; color: #fff; display: flex; align-items: center; gap: 6px; }
+  .ft-sub { font-size: 12.5px; color: #cfcfd6; margin-top: 3px; display: flex; align-items: center; gap: 8px; }
+  .ft-sub .av { display: inline-flex; align-items: center; gap: 5px; color: var(--green); font-weight: 500; }
+  .ft-sub .av .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+  .ft-hire { background: #fff; color: #000; border: 0; font-weight: 650; font-size: 13.5px;
+    padding: 9px 20px; border-radius: 9px; cursor: pointer; font-family: inherit; flex-shrink: 0; }
+  .ft-hire:hover { background: #e2e2e2; }
+
+  /* ---------- Control bar ---------- */
+  .controls { display: flex; align-items: center; gap: 10px; margin-bottom: 18px;
+    flex-wrap: wrap; }
+  .bigsearch { flex: 1; min-width: 220px; position: relative; }
+  .bigsearch svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+    width: 16px; height: 16px; color: var(--text-3); }
+  .bigsearch input { width: 100%; background: var(--card); border: 1px solid var(--border);
+    color: var(--text); padding: 11px 12px 11px 38px; border-radius: 11px; font-size: 14px;
+    outline: none; font-family: inherit; }
+  .bigsearch input:focus { border-color: var(--border-hi); }
+  .bigsearch input::placeholder { color: var(--text-3); }
+
+  .btn { display: inline-flex; align-items: center; gap: 8px; background: var(--card);
+    border: 1px solid var(--border); color: var(--text); padding: 11px 14px;
+    border-radius: 11px; font-size: 13.5px; font-weight: 500; cursor: pointer;
+    white-space: nowrap; font-family: inherit; }
+  .btn:hover { background: var(--card-hover); border-color: var(--border-hi); }
+  .btn svg { width: 15px; height: 15px; opacity: .9; }
+  .btn .chev { margin-left: 2px; opacity: .6; }
+  .btn.active-filter { border-color: var(--border-hi); color: var(--text); }
+  .badge-count { background: var(--text); color:#000; font-size: 11px; font-weight:700;
+    border-radius: 20px; padding: 1px 7px; }
+
+  .seg { display: flex; background: var(--card); border: 1px solid var(--border);
+    border-radius: 11px; padding: 3px; }
+  .seg button { background: transparent; border: 0; color: var(--text-2);
+    font-size: 13px; font-weight: 600; padding: 7px 13px; border-radius: 8px;
+    cursor: pointer; display: flex; align-items: center; gap: 7px; font-family: inherit; }
+  .seg button svg { width: 15px; height: 15px; }
+  .seg button.on { background: #2a2a2d; color: var(--text); }
+
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+  .chip { display: inline-flex; align-items: center; gap: 7px; background: var(--panel);
+    border: 1px solid var(--border); border-radius: 20px; padding: 6px 8px 6px 12px;
+    font-size: 12.5px; color: var(--text-2); }
+  .chip b { color: var(--text); font-weight: 600; }
+  .chip .x { width: 16px; height: 16px; border-radius: 50%; display: grid;
+    place-items: center; cursor: pointer; color: var(--text-3); font-size: 11px; }
+  .chip .x:hover { background: var(--border); color: var(--text); }
+  .chips .clear { color: var(--text); font-size: 12.5px; cursor: pointer;
+    align-self: center; font-weight: 500; opacity: .8; }
+  .chips .clear:hover { opacity: 1; }
+
+  .result-count { font-size: 13px; color: var(--text-3); margin-bottom: 18px; }
+  .result-count b { color: var(--text-2); }
+
+  /* ---------- People grid — fewer per row, bigger cards ---------- */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
+    gap: 22px; }
+
+  .card { background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    transition: border-color .14s ease, box-shadow .14s ease;
+    display: flex; flex-direction: column; }
+  .card:hover { border-color: var(--border-hi);
+    box-shadow: 0 16px 44px -20px rgba(0,0,0,.85); }
+
+  /* ----- carousel: one featured project at a time ----- */
+  .carousel { position: relative; aspect-ratio: 16/10; background: var(--panel);
+    overflow: hidden; }
+  .track { display: flex; height: 100%; transition: transform .35s cubic-bezier(.4,0,.2,1); }
+  .slide { min-width: 100%; height: 100%; background-size: cover; background-position: center; }
+  .arrow { position: absolute; top: 50%; transform: translateY(-50%);
+    width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,.18);
+    background: rgba(10,10,11,.6); backdrop-filter: blur(6px); color: #fff;
+    display: grid; place-items: center; cursor: pointer; opacity: 0;
+    transition: opacity .15s, background .15s; z-index: 3; }
+  .arrow svg { width: 16px; height: 16px; }
+  .arrow:hover { background: rgba(10,10,11,.9); }
+  .arrow.prev { left: 10px; } .arrow.next { right: 10px; }
+  .card:hover .arrow { opacity: 1; }
+  .dots { position: absolute; bottom: 11px; left: 0; right: 0; display: flex;
+    justify-content: center; gap: 6px; z-index: 3; }
+  .dots span { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.4);
+    transition: background .15s, width .15s; }
+  .dots span.on { background: #fff; width: 16px; border-radius: 4px; }
+  .slide-count { position: absolute; top: 11px; right: 11px; z-index: 3;
+    background: rgba(10,10,11,.7); backdrop-filter: blur(6px); color: #fff;
+    font-size: 11.5px; font-weight: 600; padding: 3px 9px; border-radius: 20px; }
+
+  .card-body { padding: 15px 17px 17px; }
+  .who { display: flex; align-items: center; gap: 11px; }
+  .who .pfp { width: 44px; height: 44px; border-radius: 11px; flex-shrink: 0;
+    background-size: cover; border: 1px solid var(--border); }
+  .who .meta { min-width: 0; flex: 1; }
+  .who .nm { font-size: 15.5px; font-weight: 640; display: flex; align-items: center; gap: 6px; }
+  .verified { width: 14px; height: 14px; color: #4aa3ff; flex-shrink: 0; }
+  .who .sub { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
+  .tier { font-size: 10.5px; font-weight: 700; letter-spacing:.02em; text-transform: uppercase;
+    color: var(--text-2); background: var(--panel); border: 1px solid var(--border);
+    padding: 3px 7px; border-radius: 6px; }
+  .tier.pro { color: #ffd479; border-color: #4a3c12; background: #1c1709; }
+  .avail { display: inline-flex; align-items: center; gap: 6px; font-size: 12px;
+    color: var(--green); font-weight: 500; }
+  .avail .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--green);
+    box-shadow: 0 0 0 0 rgba(61,220,132,.5); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(61,220,132,.5);} 70%{box-shadow:0 0 0 6px rgba(61,220,132,0);} 100%{box-shadow:0 0 0 0 rgba(61,220,132,0);} }
+
+  .loc { display: flex; align-items: center; gap: 5px; font-size: 13px;
+    color: var(--text-2); margin-top: 14px; }
+  .loc svg { width: 14px; height: 14px; color: var(--text-3); }
+
+  .card-foot { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
+  .price { font-size: 13px; color: var(--text-2); }
+  .price b { color: var(--text); font-weight: 650; }
+  .spacer { flex: 1; }
+  .hire { background: var(--white-btn); color: #000; border: 0; font-weight: 650;
+    font-size: 13.5px; padding: 9px 20px; border-radius: 9px; cursor: pointer;
+    font-family: inherit; }
+  .hire:hover { background: #e2e2e2; }
+  .follow { background: transparent; color: var(--text); border: 1px solid var(--border-hi);
+    font-weight: 550; font-size: 13.5px; padding: 9px 16px; border-radius: 9px;
+    cursor: pointer; font-family: inherit; }
+  .follow:hover { background: var(--card-hover); }
+
+  /* ---------- PROJECT directory ---------- */
+  .proj-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px,1fr));
+    gap: 20px; }
+  .proj { border-radius: var(--radius); overflow: hidden; cursor: pointer; position: relative;
+    border: 1px solid var(--border); background: var(--card); }
+  .proj .img { aspect-ratio: 4/3; background-size: cover; background-position: center; }
+  .proj:hover .overlay { opacity: 1; }
+  .proj .overlay { position: absolute; inset: 0; opacity: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.88) 0%, rgba(0,0,0,0) 55%);
+    display: flex; align-items: flex-end; padding: 14px; transition: opacity .15s; }
+  .proj .author { display: flex; align-items: center; gap: 9px; width: 100%; }
+  .proj .author .pfp { width: 32px; height: 32px; border-radius: 8px; background-size: cover; }
+  .proj .author .nm { font-size: 13.5px; font-weight: 600; }
+  .proj .author .loc2 { font-size: 11.5px; color: #cfcfd6; }
+  .proj .hire-mini { margin-left: auto; background: #fff; color:#000; border:0;
+    font-size: 12.5px; font-weight: 650; padding: 8px 15px; border-radius: 8px; cursor: pointer;
+    font-family: inherit; }
+  .proj .label { padding: 12px 14px; }
+  .proj .label .pn { font-size: 13.5px; font-weight: 600; }
+  .proj .label .pc { font-size: 12px; color: var(--text-3); margin-top: 3px; }
+
+  /* ---------- dropdown panels ---------- */
+  .pop-wrap { position: relative; }
+  .pop { position: absolute; top: calc(100% + 8px); right: 0; width: 270px;
+    background: var(--panel); border: 1px solid var(--border-hi); border-radius: 13px;
+    padding: 14px; z-index: 50; box-shadow: 0 22px 55px -22px rgba(0,0,0,.92);
+    display: none; }
+  .pop.show { display: block; }
+  .pop h4 { font-size: 11px; text-transform: uppercase; letter-spacing: .05em;
+    color: var(--text-3); margin-bottom: 9px; font-weight: 700; }
+  .opt { display: flex; align-items: center; gap: 10px; padding: 8px 9px; border-radius: 8px;
+    font-size: 13.5px; cursor: pointer; color: var(--text-2); }
+  .opt:hover { background: var(--card); color: var(--text); }
+  .opt.sel { color: var(--text); }
+  .opt .dot { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--border-hi); flex-shrink:0; }
+  .opt.sel .dot { border-color: #fff; background: radial-gradient(#fff 40%, transparent 45%); }
+  .pop .divline { height: 1px; background: var(--border); margin: 12px 0; }
+
+  /* ---------- AI Match button (subtle) ---------- */
+  .ai-match-btn { flex-shrink: 0; display: inline-flex; align-items: center; gap: 8px;
+    font-family: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer;
+    color: #cfe4ff; padding: 10px 16px; border-radius: 11px;
+    background: rgba(43,143,255,.12); border: 1px solid rgba(43,143,255,.4);
+    transition: background .12s, transform .12s; white-space: nowrap; }
+  .ai-match-btn:hover { background: rgba(43,143,255,.2); transform: translateY(-1px); }
+  .ai-match-btn svg { width: 16px; height: 16px; color: #4aa3ff; }
+
+  /* ---------- Match modal ---------- */
+  .overlay-bg { position: fixed; inset: 0; background: rgba(0,0,0,.6);
+    backdrop-filter: blur(4px); z-index: 100; display: none; align-items: center;
+    justify-content: center; padding: 24px; }
+  .overlay-bg.show { display: flex; }
+  .modal { width: 100%; max-width: 540px; background: var(--panel);
+    border: 1px solid var(--border-hi); border-radius: 20px; overflow: hidden;
+    box-shadow: 0 40px 90px -30px rgba(0,0,0,.9); }
+  .modal-top { padding: 20px 24px 0; }
+  .modal-bar { height: 4px; background: var(--card); border-radius: 4px; overflow: hidden; }
+  .modal-bar i { display: block; height: 100%; background: linear-gradient(90deg,#2b8fff,#4aa3ff);
+    border-radius: 4px; width: 25%; transition: width .3s ease; }
+  .modal-x { position: absolute; top: 16px; right: 18px; width: 30px; height: 30px;
+    border-radius: 8px; border: 0; background: var(--card); color: var(--text-2);
+    cursor: pointer; font-size: 15px; }
+  .modal-x:hover { background: var(--card-hover); color: var(--text); }
+  .modal-body { padding: 22px 24px 24px; position: relative; }
+  .modal-eyebrow { display: inline-flex; align-items: center; gap: 6px; font-size: 12px;
+    font-weight: 600; color: #4aa3ff; margin-bottom: 12px; }
+  .modal-eyebrow svg { width: 14px; height: 14px; }
+  .modal h2 { font-size: 21px; font-weight: 680; letter-spacing: -.02em; }
+  .modal .q-sub { color: var(--text-2); font-size: 13.5px; margin-top: 6px; }
+  .q-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+  .q-opt { display: flex; align-items: center; gap: 10px; padding: 14px 15px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    cursor: pointer; font-size: 14px; font-weight: 500; transition: border-color .12s, background .12s; }
+  .q-opt:hover { border-color: var(--border-hi); }
+  .q-opt.sel { border-color: #2b8fff; background: #0e1d30; }
+  .q-opt .em { font-size: 18px; }
+  .modal-foot { display: flex; align-items: center; gap: 10px; margin-top: 22px; }
+  .modal-foot .step-n { font-size: 12.5px; color: var(--text-3); }
+  .modal-foot .grow { flex: 1; }
+  .m-back { background: transparent; border: 1px solid var(--border-hi); color: var(--text);
+    font-family: inherit; font-size: 13.5px; font-weight: 550; padding: 10px 16px;
+    border-radius: 10px; cursor: pointer; }
+  .m-back:hover { background: var(--card); }
+  .m-next { background: #fff; color: #000; border: 0; font-family: inherit; font-size: 13.5px;
+    font-weight: 650; padding: 10px 22px; border-radius: 10px; cursor: pointer; }
+  .m-next:hover { background: #e2e2e2; }
+  .m-next:disabled { opacity: .4; cursor: not-allowed; }
+
+  /* matching + results */
+  .matching { text-align: center; padding: 36px 0 30px; }
+  .spinner { width: 44px; height: 44px; margin: 0 auto 18px; border-radius: 50%;
+    border: 3px solid var(--card); border-top-color: #2b8fff; animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .matching p { color: var(--text-2); font-size: 14px; }
+  .match-list { display: flex; flex-direction: column; gap: 12px; margin-top: 18px; }
+  .match-row { display: flex; align-items: center; gap: 13px; padding: 13px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 13px; }
+  .match-row .pfp { width: 46px; height: 46px; border-radius: 11px; background-size: cover; flex-shrink: 0; }
+  .match-row .info { flex: 1; min-width: 0; }
+  .match-row .rn { font-size: 14.5px; font-weight: 640; display: flex; align-items: center; gap: 6px; }
+  .match-row .rs { font-size: 12.5px; color: var(--text-2); margin-top: 3px; }
+  .match-score { font-size: 11.5px; font-weight: 700; color: #3ddc84;
+    background: #0e2018; border: 1px solid #194d34; padding: 3px 8px; border-radius: 20px; }
+  .match-row .hire { padding: 8px 16px; }
+
+  @media (max-width: 860px) {
+    .sidebar { display: none; }
+    .content { padding: 18px; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="profile">
+      <div class="avatar"></div>
+      <div class="name">Mason Price</div>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M8 15l4 4 4-4"/></svg>
+    </div>
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input placeholder="Search Members..." />
+    </div>
+
+    <div class="nav-label">Explore</div>
+    <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg>Feed</div>
+    <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg>Hype</div>
+    <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Activity</div>
+
+    <div class="nav-label">Community</div>
+    <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>Marketplace</div>
+    <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>Gallery</div>
+    <div class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2M16 3.13a4 4 0 010 7.75M21 21v-2a4 4 0 00-3-3.87"/></svg>Members</div>
+    <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>Contests</div>
+
+    <div class="foot">
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg>Legal</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 2.5-3 2.5"/><path d="M12 17h.01"/></svg>Support</div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="topbar">
+      <div class="tabs">
+        <div class="tab">All</div>
+        <div class="tab">Creators</div>
+        <div class="tab active">Experts</div>
+        <div class="tab">Agencies</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="head">
+        <div class="head-text">
+          <h1>Hire an Expert</h1>
+          <p>Browse trusted freelancers and studios by their work. Find your match, then hire in one click.</p>
+        </div>
+        <button class="ai-match-btn" onclick="openMatch()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z"/><path d="M19 14l.7 1.9L21.6 16.6 19.7 17.3 19 19.2 18.3 17.3 16.4 16.6 18.3 15.9 19 14z"/></svg>
+          Find my match
+        </button>
+      </div>
+
+      <!-- Featured row -->
+      <div class="featured-head">
+        <div class="ft-title">Featured</div>
+        <div class="ft-nav">
+          <button class="ft-arrow" onclick="scrollFeatured(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <button class="ft-arrow" onclick="scrollFeatured(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+        </div>
+      </div>
+      <div id="featuredRow" class="featured-row"></div>
+
+      <div class="controls">
+        <div class="bigsearch">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input placeholder="Search by name, skill, or style…" />
+        </div>
+
+        <div class="pop-wrap">
+          <button class="btn active-filter" id="locBtn" onclick="toggle('locPop')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Location: <b style="font-weight:600">United States</b>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="pop" id="locPop">
+            <h4>Filter by location</h4>
+            <div class="opt sel" onclick="setLoc(this,'United States')"><span class="dot"></span>United States</div>
+            <div class="opt" onclick="setLoc(this,'United Kingdom')"><span class="dot"></span>United Kingdom</div>
+            <div class="opt" onclick="setLoc(this,'Europe')"><span class="dot"></span>Europe</div>
+            <div class="opt" onclick="setLoc(this,'Canada')"><span class="dot"></span>Canada</div>
+            <div class="opt" onclick="setLoc(this,'Asia')"><span class="dot"></span>Asia</div>
+            <div class="opt" onclick="setLoc(this,'Anywhere')"><span class="dot"></span>Anywhere</div>
+          </div>
+        </div>
+
+        <div class="pop-wrap">
+          <button class="btn" id="tierBtn" onclick="toggle('tierPop')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>
+            Tier: <b style="font-weight:600" id="tierLabel">All</b>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="pop" id="tierPop">
+            <h4>Filter by tier</h4>
+            <div class="opt sel" onclick="setTier(this,'All')"><span class="dot"></span>All tiers</div>
+            <div class="opt" onclick="setTier(this,'Pro Expert')"><span class="dot"></span><span class="tier pro">Pro Expert</span></div>
+            <div class="opt" onclick="setTier(this,'Expert')"><span class="dot"></span><span class="tier">Expert</span></div>
+          </div>
+        </div>
+
+        <div class="pop-wrap">
+          <button class="btn" onclick="toggle('filterPop')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+            Filter <span class="badge-count">1</span>
+          </button>
+          <div class="pop" id="filterPop">
+            <h4>Budget</h4>
+            <div class="opt"><span class="dot"></span>Under $1K</div>
+            <div class="opt sel"><span class="dot"></span>$1K – $5K</div>
+            <div class="opt"><span class="dot"></span>$5K+</div>
+            <div class="divline"></div>
+            <h4>Specialty</h4>
+            <div class="opt"><span class="dot"></span>Framer</div>
+            <div class="opt"><span class="dot"></span>Webflow</div>
+            <div class="opt"><span class="dot"></span>Branding</div>
+            <div class="divline"></div>
+            <h4>Availability</h4>
+            <div class="opt"><span class="dot"></span>Available now</div>
+          </div>
+        </div>
+
+        <div class="pop-wrap">
+          <button class="btn" onclick="toggle('sortPop')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h13M3 12h9M3 18h5M17 8V4M17 4l-3 3M17 4l3 3"/></svg>
+            Sort: <b style="font-weight:600" id="sortLabel">Featured</b>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="pop" id="sortPop">
+            <h4>Sort by</h4>
+            <div class="opt sel" onclick="setSort(this,'Featured')"><span class="dot"></span>Featured</div>
+            <div class="opt" onclick="setSort(this,'Tier: Pro Experts first')"><span class="dot"></span>Tier: Pro Experts first</div>
+            <div class="opt" onclick="setSort(this,'Most followers')"><span class="dot"></span>Most followers</div>
+            <div class="opt" onclick="setSort(this,'Recently active')"><span class="dot"></span>Recently active</div>
+            <div class="opt" onclick="setSort(this,'Available now')"><span class="dot"></span>Available now</div>
+            <div class="opt" onclick="setSort(this,'Price: low to high')"><span class="dot"></span>Price: low to high</div>
+          </div>
+        </div>
+
+        <div class="seg">
+          <button class="on" id="segPeople" onclick="setView('people')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="3"/><path d="M3 20v-1a5 5 0 015-5h2a5 5 0 015 5v1"/><circle cx="18" cy="8" r="2.2"/></svg>
+            People
+          </button>
+          <button id="segProjects" onclick="setView('projects')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+            Projects
+          </button>
+        </div>
+      </div>
+
+      <div class="chips">
+        <span class="chip"><b>United States</b><span class="x">✕</span></span>
+        <span class="chip">Budget: <b>$1K–$5K</b><span class="x">✕</span></span>
+        <span class="clear">Clear all</span>
+      </div>
+
+      <div class="result-count"><b>248</b> experts in the United States · sorted by Featured</div>
+
+      <div id="peopleView" class="grid"></div>
+      <div id="projectsView" class="proj-grid" style="display:none"></div>
+    </div>
+  </main>
+</div>
+
+<!-- AI Match modal -->
+<div class="overlay-bg" id="matchOverlay">
+  <div class="modal">
+    <div class="modal-top">
+      <div class="modal-bar"><i id="matchProgress"></i></div>
+    </div>
+    <div class="modal-body">
+      <button class="modal-x" onclick="closeMatch()">✕</button>
+      <div id="matchStep"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const grads = [
+    'linear-gradient(135deg,#1e3a8a,#0ea5e9)','linear-gradient(135deg,#7c3aed,#ec4899)',
+    'linear-gradient(135deg,#0f766e,#84cc16)','linear-gradient(135deg,#b45309,#f59e0b)',
+    'linear-gradient(135deg,#1e293b,#64748b)','linear-gradient(135deg,#be123c,#fb7185)',
+    'linear-gradient(135deg,#312e81,#6366f1)','linear-gradient(135deg,#064e3b,#10b981)',
+    'linear-gradient(135deg,#7c2d12,#ea580c)','linear-gradient(135deg,#0c4a6e,#38bdf8)',
+    'linear-gradient(135deg,#155e75,#22d3ee)','linear-gradient(135deg,#4c1d95,#a78bfa)',
+    'linear-gradient(135deg,#831843,#f472b6)','linear-gradient(135deg,#14532d,#4ade80)',
+    'linear-gradient(135deg,#1f2937,#9ca3af)','linear-gradient(135deg,#92400e,#fbbf24)'
+  ];
+  const pfpGrads = ['#5b6cff,#a855f7','#f59e0b,#ef4444','#10b981,#06b6d4','#ec4899,#8b5cf6','#3b82f6,#14b8a6','#f43f5e,#f59e0b','#8b5cf6,#22d3ee','#f97316,#facc15','#06b6d4,#3b82f6'];
+  const g = i => grads[((i%grads.length)+grads.length)%grads.length];
+  const pf = i => `linear-gradient(135deg,${pfpGrads[i % pfpGrads.length]})`;
+
+  const experts = [
+    {name:'Shawnee Wright', pro:true,  loc:'Phoenix, USA',     price:'$1K',   avail:true,  shots:4},
+    {name:'Arini Studio',   pro:true,  loc:'Austin, USA',      price:'$3K',   avail:true,  shots:5},
+    {name:'Matt Gemi',      pro:false, loc:'New York, USA',    price:'$5K',   avail:false, shots:3},
+    {name:'Dario Grigoletti',pro:true, loc:'Miami, USA',       price:'$2K',   avail:true,  shots:4},
+    {name:'Kazi Ehsan',     pro:false, loc:'Seattle, USA',     price:'$1.5K', avail:false, shots:3},
+    {name:'Virgil Caffier', pro:true,  loc:'Chicago, USA',     price:'$4K',   avail:true,  shots:5},
+    {name:'Anwar Raza',     pro:false, loc:'Denver, USA',      price:'$1K',   avail:true,  shots:3},
+    {name:'Vitrea Studio',  pro:true,  loc:'Los Angeles, USA', price:'$5K',   avail:false, shots:4},
+    {name:'Framer Geeks',   pro:true,  loc:'Boston, USA',      price:'$2.5K', avail:true,  shots:4}
+  ];
+
+  const verifiedSVG = `<svg class="verified" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 1.8 3 .2.6 2.9L20 9.3l-1 2.7 1 2.7-2 2.4-.6 2.9-3 .2L12 22l-2.4-1.8-3-.2-.6-2.9L4 14.7l1-2.7-1-2.7 2-2.4.6-2.9 3-.2z"/><path d="M9 12l2 2 4-4" stroke="#161617" stroke-width="2" fill="none"/></svg>`;
+  const pinSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
+
+  function expertCard(e) {
+    const i = e.oi;
+    const slides = Array.from({length:e.shots}, (_,s)=>`<div class="slide" style="background:${g(i*5+s)}"></div>`).join('');
+    const dots = Array.from({length:e.shots}, (_,s)=>`<span class="${s===0?'on':''}"></span>`).join('');
+    return `
+    <div class="card" data-idx="${i}" data-count="${e.shots}">
+      <div class="carousel">
+        <div class="track" id="track-${i}">${slides}</div>
+        <div class="slide-count">1 / ${e.shots}</div>
+        <button class="arrow prev" onclick="slideCard(${i},-1,event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <button class="arrow next" onclick="slideCard(${i},1,event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg></button>
+        <div class="dots" id="dots-${i}">${dots}</div>
+      </div>
+      <div class="card-body">
+        <div class="who">
+          <div class="pfp" style="background:${pf(i)}"></div>
+          <div class="meta">
+            <div class="nm">${e.name} ${e.pro?verifiedSVG:''}</div>
+            <div class="sub">
+              <span class="tier ${e.pro?'pro':''}">${e.pro?'Pro Expert':'Expert'}</span>
+              ${e.avail?'<span class="avail"><span class="pulse"></span>Available now</span>':''}
+            </div>
+          </div>
+        </div>
+        <div class="loc">${pinSVG}${e.loc}</div>
+        <div class="card-foot">
+          <span class="price">from <b>${e.price}</b></span>
+          <span class="spacer"></span>
+          <button class="follow">Follow</button>
+          <button class="hire">Hire</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function projectCard(e, i, slot) {
+    return `
+    <div class="proj">
+      <div class="img" style="background:${g(i*5+slot)}"></div>
+      <div class="overlay">
+        <div class="author">
+          <div class="pfp" style="background:${pf(i)}"></div>
+          <div>
+            <div class="nm">${e.name}</div>
+            <div class="loc2">${e.loc}</div>
+          </div>
+          <button class="hire-mini">Hire</button>
+        </div>
+      </div>
+      <div class="label">
+        <div class="pn">${['Landing Page','Rebrand','Portfolio','SaaS Site','Template'][slot%5]}</div>
+        <div class="pc">by ${e.name} · ${e.loc}</div>
+      </div>
+    </div>`;
+  }
+
+  // ---- Featured row (top 3 picks) ----
+  const starSVG = `<svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>`;
+  function featuredCard(e, i) {
+    return `
+    <div class="ft-card">
+      <div class="ft-bg" style="background:${g(i*5)}"></div>
+      <div class="ft-shade"></div>
+      <div class="ft-pill">${starSVG} Featured Expert</div>
+      <div class="ft-body">
+        <div class="ft-pfp" style="background:${pf(i)}"></div>
+        <div class="ft-meta">
+          <div class="ft-nm">${e.name} ${e.pro?verifiedSVG:''}</div>
+          <div class="ft-sub">
+            <span>${e.loc}</span>
+            <span>·</span>
+            <span>from <b style="color:#fff">${e.price}</b></span>
+            ${e.avail?'<span class="av"><span class="pulse"></span>Available</span>':''}
+          </div>
+        </div>
+        <button class="ft-hire">Hire</button>
+      </div>
+    </div>`;
+  }
+  const featuredPicks = [experts[1], experts[5], experts[7], experts[0]];
+  document.getElementById('featuredRow').innerHTML =
+    featuredPicks.map((e)=>featuredCard(e, experts.indexOf(e))).join('');
+
+  function scrollFeatured(dir){
+    document.getElementById('featuredRow').scrollBy({ left: dir*500, behavior:'smooth' });
+  }
+
+  // ---- People grid: tier filter + sort aware ----
+  experts.forEach((e,i)=>{ e.oi = i; });
+  let currentTier = 'All';
+  let currentSort = 'Featured';
+
+  function renderPeople(){
+    let list = experts.slice();
+    if(currentTier === 'Pro Expert') list = list.filter(e=>e.pro);
+    else if(currentTier === 'Expert') list = list.filter(e=>!e.pro);
+
+    if(currentSort === 'Tier: Pro Experts first') list.sort((a,b)=>(b.pro?1:0)-(a.pro?1:0));
+    else if(currentSort === 'Available now') list.sort((a,b)=>(b.avail?1:0)-(a.avail?1:0));
+    else if(currentSort === 'Price: low to high')
+      list.sort((a,b)=>parseFloat(a.price.replace(/[$K]/g,''))-parseFloat(b.price.replace(/[$K]/g,'')));
+
+    document.getElementById('peopleView').innerHTML = list.map(expertCard).join('');
+    const noun = currentTier==='All' ? 'experts' : (currentTier==='Pro Expert'?'Pro Experts':'Experts');
+    document.querySelector('.result-count').innerHTML =
+      `<b>${list.length===experts.length?'248':list.length}</b> ${noun} in the United States · sorted by ${currentSort}`;
+  }
+  renderPeople();
+
+  let projHTML = '';
+  experts.forEach((e,i)=>{ for(let s=0;s<3;s++) projHTML += projectCard(e,i,s); });
+  document.getElementById('projectsView').innerHTML = projHTML;
+
+  // ---- carousel ----
+  const pos = {};
+  function slideCard(i, dir, ev){
+    ev.stopPropagation();
+    const card = document.querySelector(`.card[data-idx="${i}"]`);
+    const count = +card.dataset.count;
+    pos[i] = ((pos[i]||0) + dir + count) % count;
+    document.getElementById('track-'+i).style.transform = `translateX(-${pos[i]*100}%)`;
+    const dots = document.getElementById('dots-'+i).children;
+    [...dots].forEach((d,k)=>d.classList.toggle('on', k===pos[i]));
+    card.querySelector('.slide-count').textContent = `${pos[i]+1} / ${count}`;
+  }
+
+  // ---- popovers ----
+  function toggle(id){
+    const el = document.getElementById(id);
+    document.querySelectorAll('.pop').forEach(p=>{ if(p!==el) p.classList.remove('show'); });
+    el.classList.toggle('show');
+  }
+  document.addEventListener('click', e=>{
+    if(!e.target.closest('.pop-wrap')) document.querySelectorAll('.pop').forEach(p=>p.classList.remove('show'));
+  });
+  function setLoc(el,val){
+    el.parentElement.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+    el.classList.add('sel');
+    document.querySelector('#locBtn b').textContent = val;
+  }
+  function setSort(el,val){
+    el.parentElement.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+    el.classList.add('sel');
+    document.getElementById('sortLabel').textContent = val;
+    currentSort = val;
+    renderPeople();
+  }
+  function setTier(el,val){
+    el.parentElement.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+    el.classList.add('sel');
+    document.getElementById('tierLabel').textContent = val === 'All' ? 'All' : val;
+    document.getElementById('tierBtn').classList.toggle('active-filter', val !== 'All');
+    currentTier = val;
+    renderPeople();
+  }
+  // ================= AI Match questionnaire =================
+  const matchQuestions = [
+    { key:'type', title:'What are you building?', sub:'This helps us match the right specialty.',
+      opts:[['🚀','SaaS / Startup'],['🎨','Portfolio'],['🛍️','E-commerce'],['🏢','Agency / Studio'],['📱','App landing'],['✨','Something else']] },
+    { key:'budget', title:"What's your budget?", sub:'Match you with experts in your range.',
+      opts:[['💵','Under $1K'],['💳','$1K – $5K'],['💎','$5K+'],['🤔','Not sure yet']] },
+    { key:'tier', title:'Preferred experience level?', sub:'Pro Experts are the vetted top tier.',
+      opts:[['⭐','Pro Expert'],['✅','Expert'],['🌐','Either is fine']] },
+    { key:'loc', title:'Location preference?', sub:'Timezone and collaboration matter.',
+      opts:[['🇺🇸','United States'],['🇪🇺','Europe'],['🌍','Anywhere']] }
+  ];
+  let matchIdx = 0;
+  const matchAnswers = {};
+
+  function openMatch(){ matchIdx = 0; document.getElementById('matchOverlay').classList.add('show'); renderMatchStep(); }
+  function closeMatch(){ document.getElementById('matchOverlay').classList.remove('show'); }
+  document.getElementById('matchOverlay').addEventListener('click', e=>{ if(e.target.id==='matchOverlay') closeMatch(); });
+
+  function renderMatchStep(){
+    const total = matchQuestions.length;
+    document.getElementById('matchProgress').style.width = ((matchIdx)/(total)*100 + 8) + '%';
+    const q = matchQuestions[matchIdx];
+    const sel = matchAnswers[q.key];
+    document.getElementById('matchStep').innerHTML = `
+      <div class="modal-eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z"/></svg>
+        AI Matchmaker
+      </div>
+      <h2>${q.title}</h2>
+      <div class="q-sub">${q.sub}</div>
+      <div class="q-opts">
+        ${q.opts.map(o=>`<div class="q-opt ${sel===o[1]?'sel':''}" onclick="pickMatch('${q.key}','${o[1]}')"><span class="em">${o[0]}</span>${o[1]}</div>`).join('')}
+      </div>
+      <div class="modal-foot">
+        <span class="step-n">Step ${matchIdx+1} of ${total}</span>
+        <span class="grow"></span>
+        ${matchIdx>0?'<button class="m-back" onclick="matchBack()">Back</button>':''}
+        <button class="m-next" id="matchNext" onclick="matchNext()" ${sel?'':'disabled'}>
+          ${matchIdx===total-1?'See my matches':'Continue'}
+        </button>
+      </div>`;
+  }
+  function pickMatch(key,val){ matchAnswers[key]=val; renderMatchStep(); }
+  function matchBack(){ if(matchIdx>0){ matchIdx--; renderMatchStep(); } }
+  function matchNext(){
+    if(matchIdx < matchQuestions.length-1){ matchIdx++; renderMatchStep(); }
+    else runMatch();
+  }
+
+  function runMatch(){
+    document.getElementById('matchProgress').style.width = '100%';
+    document.getElementById('matchStep').innerHTML =
+      `<div class="matching"><div class="spinner"></div><p>Finding your best matches…</p></div>`;
+    setTimeout(showMatches, 1300);
+  }
+  function showMatches(){
+    // score experts against answers (lightweight demo logic)
+    const scored = experts.map(e=>{
+      let s = 70 + (e.oi % 7);
+      if(matchAnswers.tier==='Pro Expert' && e.pro) s += 18;
+      if(matchAnswers.tier==='Expert' && !e.pro) s += 18;
+      if(matchAnswers.tier==='Either is fine') s += 6;
+      if(matchAnswers.budget==='$1K – $5K' && /1|2|3|4/.test(e.price)) s += 8;
+      if(e.avail) s += 5;
+      return {e, s: Math.min(99, s)};
+    }).sort((a,b)=>b.s-a.s).slice(0,3);
+
+    const rows = scored.map(({e,s})=>`
+      <div class="match-row">
+        <div class="pfp" style="background:${pf(e.oi)}"></div>
+        <div class="info">
+          <div class="rn">${e.name} ${e.pro?verifiedSVG:''}</div>
+          <div class="rs">${e.pro?'Pro Expert':'Expert'} · ${e.loc} · from ${e.price}</div>
+        </div>
+        <span class="match-score">${s}% match</span>
+        <button class="hire">Hire</button>
+      </div>`).join('');
+
+    document.getElementById('matchStep').innerHTML = `
+      <div class="modal-eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z"/></svg>
+        Your top matches
+      </div>
+      <h2>3 experts that fit your brief</h2>
+      <div class="q-sub">Based on ${matchAnswers.type||'your project'}, ${matchAnswers.budget||'your budget'}, and a ${matchAnswers.tier||'flexible'} preference.</div>
+      <div class="match-list">${rows}</div>
+      <div class="modal-foot">
+        <button class="m-back" onclick="matchIdx=0;renderMatchStep()">Start over</button>
+        <span class="grow"></span>
+        <button class="m-next" onclick="closeMatch()">View full profiles</button>
+      </div>`;
+  }
+
+  function setView(v){
+    const ppl = v==='people';
+    document.getElementById('peopleView').style.display = ppl?'grid':'none';
+    document.getElementById('projectsView').style.display = ppl?'none':'grid';
+    document.getElementById('segPeople').classList.toggle('on', ppl);
+    document.getElementById('segProjects').classList.toggle('on', !ppl);
+  }
+</script>
+</body>
+</html>
