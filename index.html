@@ -169,103 +169,73 @@
   .result-count { font-size: 13px; color: var(--text-3); margin-bottom: 18px; }
   .result-count b { color: var(--text-2); }
 
-  /* ---------- People grid — fewer per row, bigger cards ---------- */
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
-    gap: 22px; }
+  /* ---------- People — one expert per row (Contra-style) ---------- */
+  .people-list { display: flex; flex-direction: column; gap: 16px; }
 
   .card { background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius); overflow: hidden;
-    transition: border-color .14s ease, box-shadow .14s ease;
-    display: flex; flex-direction: column; }
+    border-radius: var(--radius); padding: 18px 20px 20px;
+    transition: border-color .14s ease, box-shadow .14s ease; }
   .card:hover { border-color: var(--border-hi);
-    box-shadow: 0 16px 44px -20px rgba(0,0,0,.85); }
+    box-shadow: 0 16px 44px -22px rgba(0,0,0,.8); }
 
-  /* ----- carousel: one featured project at a time ----- */
-  .carousel { position: relative; aspect-ratio: 16/10; background: var(--panel);
-    overflow: hidden; }
-  .track { display: flex; height: 100%; transition: transform .35s cubic-bezier(.4,0,.2,1); }
-  .slide { min-width: 100%; height: 100%; }
-
-  /* ----- shot inset on offwhite backdrop with subtle shadow ----- */
-  .shot-wrap { width: 100%; height: 100%; display: flex; align-items: center;
-    justify-content: center; padding: 9%; background: var(--shot-bg); }
-  .shot-img { width: 100%; aspect-ratio: 16/10; border-radius: 9px; overflow: hidden;
-    background-size: cover; background-position: top center; background-color: #fff;
-    border: 1px solid rgba(0,0,0,.06);
-    box-shadow: 0 12px 26px -10px rgba(0,0,0,.28), 0 3px 8px -4px rgba(0,0,0,.18); }
-  .arrow { position: absolute; top: 50%; transform: translateY(-50%);
-    width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,.18);
-    background: rgba(10,10,11,.6); backdrop-filter: blur(6px); color: #fff;
-    display: grid; place-items: center; cursor: pointer; opacity: 0;
-    transition: opacity .15s, background .15s; z-index: 3; }
-  .arrow svg { width: 16px; height: 16px; }
-  .arrow:hover { background: rgba(10,10,11,.9); }
-  .arrow.prev { left: 10px; } .arrow.next { right: 10px; }
-  .card:hover .arrow { opacity: 1; }
-  .dots { position: absolute; bottom: 11px; left: 0; right: 0; display: flex;
-    justify-content: center; gap: 6px; z-index: 3; }
-  .dots span { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.4);
-    transition: background .15s, width .15s; }
-  .dots span.on { background: #fff; width: 16px; border-radius: 4px; }
-  .slide-count { position: absolute; top: 11px; right: 11px; z-index: 3;
-    background: rgba(10,10,11,.7); backdrop-filter: blur(6px); color: #fff;
-    font-size: 11.5px; font-weight: 600; padding: 3px 9px; border-radius: 20px; }
-
-  .card-body { padding: 15px 17px 17px; }
-  .who { display: flex; align-items: center; gap: 11px; }
-  .who .pfp { width: 44px; height: 44px; border-radius: 11px; flex-shrink: 0;
+  .card-head { display: flex; align-items: center; gap: 20px; }
+  .who { display: flex; align-items: center; gap: 13px; flex: 1 1 auto; min-width: 0; }
+  .who .pfp { width: 50px; height: 50px; border-radius: 12px; flex-shrink: 0;
     background-size: cover; border: 1px solid var(--border); }
-  .who .meta { min-width: 0; flex: 1; }
-  .who .nm { font-size: 15.5px; font-weight: 640; display: flex; align-items: center; gap: 6px; }
+  .who .meta { min-width: 0; }
+  .who .nm { font-size: 16px; font-weight: 660; display: flex; align-items: center; gap: 6px; }
   .verified { width: 14px; height: 14px; color: #4aa3ff; flex-shrink: 0; }
-  .who .sub { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
+  .who .sub { display: flex; align-items: center; gap: 10px; margin-top: 5px; flex-wrap: wrap; }
+  .loc-inline { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; color: var(--text-2); }
+  .loc-inline svg { width: 13px; height: 13px; color: var(--text-3); }
   .tier { font-size: 10.5px; font-weight: 700; letter-spacing:.02em; text-transform: uppercase;
     color: var(--text-2); background: var(--panel); border: 1px solid var(--border);
     padding: 3px 7px; border-radius: 6px; }
   .tier.pro { color: #ffd479; border-color: #4a3c12; background: #1c1709; }
+
+  .stats { display: flex; gap: 26px; flex-shrink: 0; }
+  .stat { display: flex; flex-direction: column; }
+  .stat b { font-size: 14.5px; font-weight: 660; color: var(--text); }
+  .stat span { font-size: 11.5px; color: var(--text-3); margin-top: 2px; }
+
+  .head-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
   .avail { display: inline-flex; align-items: center; gap: 6px; font-size: 12px;
-    color: var(--green); font-weight: 500; }
+    color: var(--green); font-weight: 500; margin-right: 4px; }
   .avail .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--green);
     box-shadow: 0 0 0 0 rgba(61,220,132,.5); animation: pulse 2s infinite; }
   @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(61,220,132,.5);} 70%{box-shadow:0 0 0 6px rgba(61,220,132,0);} 100%{box-shadow:0 0 0 0 rgba(61,220,132,0);} }
-
-  .loc { display: flex; align-items: center; gap: 5px; font-size: 13px;
-    color: var(--text-2); margin-top: 14px; }
-  .loc svg { width: 14px; height: 14px; color: var(--text-3); }
-
-  .card-foot { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
-  .price { font-size: 13px; color: var(--text-2); }
-  .price b { color: var(--text); font-weight: 650; }
-  .spacer { flex: 1; }
   .hire { background: var(--white-btn); color: #000; border: 0; font-weight: 650;
-    font-size: 13.5px; padding: 9px 20px; border-radius: 9px; cursor: pointer;
-    font-family: inherit; }
+    font-size: 13.5px; padding: 9px 20px; border-radius: 9px; cursor: pointer; font-family: inherit; }
   .hire:hover { background: #e2e2e2; }
   .follow { background: transparent; color: var(--text); border: 1px solid var(--border-hi);
     font-weight: 550; font-size: 13.5px; padding: 9px 16px; border-radius: 9px;
     cursor: pointer; font-family: inherit; }
   .follow:hover { background: var(--card-hover); }
 
-  /* ---------- PROJECT directory ---------- */
-  .proj-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px,1fr));
-    gap: 20px; }
-  .proj { border-radius: var(--radius); overflow: hidden; cursor: pointer; position: relative;
-    border: 1px solid var(--border); background: var(--card); }
-  .proj .img { aspect-ratio: 4/3; background-size: cover; background-position: center; }
-  .proj:hover .overlay { opacity: 1; }
-  .proj .overlay { position: absolute; inset: 0; opacity: 0;
-    background: linear-gradient(to top, rgba(0,0,0,.88) 0%, rgba(0,0,0,0) 55%);
-    display: flex; align-items: flex-end; padding: 14px; transition: opacity .15s; }
-  .proj .author { display: flex; align-items: center; gap: 9px; width: 100%; }
-  .proj .author .pfp { width: 32px; height: 32px; border-radius: 8px; background-size: cover; }
-  .proj .author .nm { font-size: 13.5px; font-weight: 600; }
-  .proj .author .loc2 { font-size: 11.5px; color: #cfcfd6; }
-  .proj .hire-mini { margin-left: auto; background: #fff; color:#000; border:0;
-    font-size: 12.5px; font-weight: 650; padding: 8px 15px; border-radius: 8px; cursor: pointer;
-    font-family: inherit; }
-  .proj .label { padding: 12px 14px; }
-  .proj .label .pn { font-size: 13.5px; font-weight: 600; }
-  .proj .label .pc { font-size: 12px; color: var(--text-3); margin-top: 3px; }
+  .tagline { font-size: 14px; color: var(--text-2); margin: 15px 0 16px; }
+
+  /* 4-up project showcase */
+  .work-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .thumb { border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; cursor: pointer;
+    transition: transform .12s ease; }
+  .thumb:hover { transform: translateY(-2px); }
+
+  /* ----- shot inset on tinted backdrop with subtle shadow ----- */
+  .shot-wrap { width: 100%; height: 100%; display: flex; align-items: center;
+    justify-content: center; padding: 8%; background: var(--shot-bg); }
+  .shot-img { width: 100%; aspect-ratio: 16/10; border-radius: 8px; overflow: hidden;
+    background-size: cover; background-position: top center; background-color: #fff;
+    border: 1px solid rgba(0,0,0,.06);
+    box-shadow: 0 10px 22px -10px rgba(0,0,0,.26), 0 3px 7px -4px rgba(0,0,0,.16); }
+
+  @media (max-width: 1040px) {
+    .stats { display: none; }
+  }
+  @media (max-width: 720px) {
+    .card-head { flex-wrap: wrap; }
+    .head-actions { width: 100%; }
+    .work-row { grid-template-columns: repeat(2, 1fr); }
+  }
 
   /* ---------- dropdown panels ---------- */
   .pop-wrap { position: relative; }
@@ -500,7 +470,7 @@
 
       <div class="result-count"><b>248</b> experts in the United States · sorted by Featured</div>
 
-      <div id="peopleView" class="grid"></div>
+      <div id="peopleView" class="people-list"></div>
     </div>
   </main>
 </div>
@@ -567,56 +537,53 @@
     </div>`;
 
   const experts = [
-    {name:'Shawnee Wright', pro:true,  loc:'Phoenix, USA',     price:'$1K',   avail:true,  shots:4},
-    {name:'Arini Studio',   pro:true,  loc:'Austin, USA',      price:'$3K',   avail:true,  shots:5},
-    {name:'Matt Gemi',      pro:false, loc:'New York, USA',    price:'$5K',   avail:false, shots:3},
-    {name:'Dario Grigoletti',pro:true, loc:'Miami, USA',       price:'$2K',   avail:true,  shots:4},
-    {name:'Kazi Ehsan',     pro:false, loc:'Seattle, USA',     price:'$1.5K', avail:false, shots:3},
-    {name:'Virgil Caffier', pro:true,  loc:'Chicago, USA',     price:'$4K',   avail:true,  shots:5},
-    {name:'Anwar Raza',     pro:false, loc:'Denver, USA',      price:'$1K',   avail:true,  shots:3},
-    {name:'Vitrea Studio',  pro:true,  loc:'Los Angeles, USA', price:'$5K',   avail:false, shots:4},
-    {name:'Framer Geeks',   pro:true,  loc:'Boston, USA',      price:'$2.5K', avail:true,  shots:4}
+    {name:'Shawnee Wright', pro:true,  loc:'Phoenix, USA',     price:'$1K',   avail:true,  hired:24, followers:909, tag:'Designer, strategist & Framer builder — usually all three on one project'},
+    {name:'Arini Studio',   pro:true,  loc:'Austin, USA',      price:'$3K',   avail:true,  hired:41, followers:1240,tag:'Framer websites & templates for designers, founders and startups'},
+    {name:'Matt Gemi',      pro:false, loc:'New York, USA',    price:'$5K',   avail:false, hired:12, followers:732, tag:'Clean, high-performing websites for brands that care about detail'},
+    {name:'Dario Grigoletti',pro:true, loc:'Miami, USA',       price:'$2K',   avail:true,  hired:33, followers:687, tag:'Websites that build trust, generate leads, and make competitors look ancient'},
+    {name:'Kazi Ehsan',     pro:false, loc:'Seattle, USA',     price:'$1.5K', avail:false, hired:8,  followers:624, tag:'Premium Framer, Webflow & Figma templates for designers and agencies'},
+    {name:'Virgil Caffier', pro:true,  loc:'Chicago, USA',     price:'$4K',   avail:true,  hired:52, followers:714, tag:'Founder of a certified Framer agency — marketing sites & digital products'},
+    {name:'Anwar Raza',     pro:false, loc:'Denver, USA',      price:'$1K',   avail:true,  hired:15, followers:611, tag:'Animated, motion-led Framer templates and landing pages'},
+    {name:'Vitrea Studio',  pro:true,  loc:'Los Angeles, USA', price:'$5K',   avail:false, hired:29, followers:1530,tag:'Creative studio focused on digital design and contemporary culture'},
+    {name:'Framer Geeks',   pro:true,  loc:'Boston, USA',      price:'$2.5K', avail:true,  hired:37, followers:797, tag:'Custom Framer development & template modifications, built to last'}
   ];
 
-  // Assign every thumbnail a unique, stable site index so no website image repeats.
+  // Assign every expert exactly 4 unique, stable thumbnails (no website image repeats).
   let _imgPtr = 0;
-  experts.forEach(e => { e.shotIdx = Array.from({length:e.shots}, () => _imgPtr++); });
+  experts.forEach(e => { e.shotIdx = Array.from({length:4}, () => _imgPtr++); });
 
   const verifiedSVG = `<svg class="verified" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 1.8 3 .2.6 2.9L20 9.3l-1 2.7 1 2.7-2 2.4-.6 2.9-3 .2L12 22l-2.4-1.8-3-.2-.6-2.9L4 14.7l1-2.7-1-2.7 2-2.4.6-2.9 3-.2z"/><path d="M9 12l2 2 4-4" stroke="#161617" stroke-width="2" fill="none"/></svg>`;
   const pinSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
 
   function expertCard(e) {
     const i = e.oi;
-    const slides = Array.from({length:e.shots}, (_,s)=>`<div class="slide">${shotFrame(e.shotIdx[s])}</div>`).join('');
-    const dots = Array.from({length:e.shots}, (_,s)=>`<span class="${s===0?'on':''}"></span>`).join('');
+    const thumbs = e.shotIdx.slice(0,4).map(idx=>`<div class="thumb">${shotFrame(idx)}</div>`).join('');
     return `
-    <div class="card" data-idx="${i}" data-count="${e.shots}">
-      <div class="carousel">
-        <div class="track" id="track-${i}">${slides}</div>
-        <div class="slide-count">1 / ${e.shots}</div>
-        <button class="arrow prev" onclick="slideCard(${i},-1,event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></button>
-        <button class="arrow next" onclick="slideCard(${i},1,event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg></button>
-        <div class="dots" id="dots-${i}">${dots}</div>
-      </div>
-      <div class="card-body">
+    <div class="card">
+      <div class="card-head">
         <div class="who">
           <div class="pfp" style="${faceBG(i)}"></div>
           <div class="meta">
             <div class="nm">${e.name} ${e.pro?verifiedSVG:''}</div>
             <div class="sub">
               <span class="tier ${e.pro?'pro':''}">${e.pro?'Pro Expert':'Expert'}</span>
-              ${e.avail?'<span class="avail"><span class="pulse"></span>Available now</span>':''}
+              <span class="loc-inline">${pinSVG}${e.loc}</span>
             </div>
           </div>
         </div>
-        <div class="loc">${pinSVG}${e.loc}</div>
-        <div class="card-foot">
-          <span class="price">from <b>${e.price}</b></span>
-          <span class="spacer"></span>
+        <div class="stats">
+          <div class="stat"><b>${e.hired}x</b><span>Hired</span></div>
+          <div class="stat"><b>from ${e.price}</b><span>Rate</span></div>
+          <div class="stat"><b>${e.followers}</b><span>Followers</span></div>
+        </div>
+        <div class="head-actions">
+          ${e.avail?'<span class="avail"><span class="pulse"></span>Available now</span>':''}
           <button class="follow">Follow</button>
           <button class="hire">Hire</button>
         </div>
       </div>
+      <div class="tagline">${e.tag}</div>
+      <div class="work-row">${thumbs}</div>
     </div>`;
   }
 
@@ -680,19 +647,6 @@
       `<b>${list.length===experts.length?'248':list.length}</b> ${noun} in the United States · sorted by ${currentSort}`;
   }
   renderPeople();
-
-  // ---- carousel ----
-  const pos = {};
-  function slideCard(i, dir, ev){
-    ev.stopPropagation();
-    const card = document.querySelector(`.card[data-idx="${i}"]`);
-    const count = +card.dataset.count;
-    pos[i] = ((pos[i]||0) + dir + count) % count;
-    document.getElementById('track-'+i).style.transform = `translateX(-${pos[i]*100}%)`;
-    const dots = document.getElementById('dots-'+i).children;
-    [...dots].forEach((d,k)=>d.classList.toggle('on', k===pos[i]));
-    card.querySelector('.slide-count').textContent = `${pos[i]+1} / ${count}`;
-  }
 
   // ---- popovers ----
   function toggle(id){
